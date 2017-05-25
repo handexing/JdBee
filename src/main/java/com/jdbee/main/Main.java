@@ -35,7 +35,7 @@ public class Main {
 		// 获取三,四,五级类目
 		list = JsoupUtil.getThreeCategory(list);
 		// 获取商品url
-		// JsoupUtil.getGoodsUrlList(list);
+		JsoupUtil.getGoodsUrlList(list);
 
 		// wmic process where name="chromedriver.exe" call terminate
 

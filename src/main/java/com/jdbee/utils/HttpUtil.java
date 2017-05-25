@@ -15,6 +15,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.os.WindowsUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -64,6 +65,7 @@ public class HttpUtil {
 			e.printStackTrace();
 		} finally {
 			webDriver.close();
+			WindowsUtils.tryToKillByName("chromedriver.exe");
 		}
 		return document;
 	}
