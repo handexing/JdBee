@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * @ClassName: Category
- * @Description: 一级类别
+ * @Description: 一级类目
  * @author handx 908716835@qq.com
  * @date 2017年5月24日 下午1:45:25
  */
@@ -14,7 +14,7 @@ public class Category {
 	private Integer id;
 	private String name;
 
-	private List<Category> senondCates;// 二级类别
+	private List<SecondCategory> senondCates;// 二级类别
 
 	public Integer getId() {
 		return id;
@@ -24,7 +24,7 @@ public class Category {
 		return name;
 	}
 
-	public List<Category> getSenondCates() {
+	public List<SecondCategory> getSenondCates() {
 		return senondCates;
 	}
 
@@ -36,7 +36,7 @@ public class Category {
 		this.name = name;
 	}
 
-	public void setSenondCates(List<Category> senondCates) {
+	public void setSenondCates(List<SecondCategory> senondCates) {
 		this.senondCates = senondCates;
 	}
 

@@ -1,6 +1,7 @@
 package com.jdbee.utils;
 
 import com.jdbee.model.Category;
+import com.jdbee.model.SecondCategory;
 
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -59,7 +60,7 @@ public class JsoupUtil {
 	 */
 	public static List<Category> getSecondCategory(String content, List<Category> cates) {
 
-		List<Category> list = null;
+		List<SecondCategory> list = null;
 		Document document = Jsoup.parse(content);
 		Elements elements = document.select(".item-title span");
 
@@ -74,12 +75,12 @@ public class JsoupUtil {
 
 					Element categoryItem = element.parent().parent().parent();
 					Elements categories = categoryItem.select("dt a");
-					list = new ArrayList<Category>();
+					list = new ArrayList<SecondCategory>();
 
 					for (int j = 0; j < categories.size(); j++) {
-						Category cate = new Category();
-						cate.setId(j);
+						SecondCategory cate = new SecondCategory();
 						cate.setName(categories.get(j).text());
+						cate.setUrl("https:" + categories.get(j).attr("href"));
 						list.add(cate);
 					}
 					cates.get(i).setSenondCates(list);
