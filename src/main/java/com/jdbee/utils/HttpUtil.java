@@ -11,6 +11,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,6 +41,47 @@ public class HttpUtil {
 	public static final String TAG = "HttpUtils";
 	public static CloseableHttpClient httpClient = HttpClients.createDefault();
 	public static HttpClientContext context = new HttpClientContext();
+
+	/**
+	 * @Title: getDocumentByUrl 
+	 * @Description:使用Selenium模拟浏览器动态获取数据
+	 * @param @param url
+	 * @param @return    设定文件 
+	 * @return Document    返回类型 
+	 * @throws
+	 */
+	public static Document getDocumentByUrl(String url) {
+		WebDriver webDriver = null;
+		Document document = null;
+		try {
+			System.getProperties().setProperty("webdriver.chrome.driver",
+					"D:\\myWorkspace\\JdBee\\src\\main\\resources\\chromedriver.exe");
+			webDriver = new ChromeDriver();
+			webDriver.get(url);
+			Thread.sleep(1000);// 停止1s模拟网速
+			document = Jsoup.parse(webDriver.getPageSource());
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			webDriver.close();
+		}
+		return document;
+	}
+
+	/**
+	 * @Title: killChromDriver 
+	 * @Description: 杀死chromDriver后台进程,每次都会启动一次很浪费内存，执行完就杀掉
+	 * @param     设定文件 
+	 * @return void    返回类型 
+	 * @throws
+	 */
+	public static void killChromDriver() {
+		try {
+			Runtime.getRuntime().exec("wmic process where name=\"chromedriver.exe\" call terminate");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * @Title: sendGet 
@@ -108,4 +153,5 @@ public class HttpUtil {
 		}
 		return content;
 	}
+
 }
