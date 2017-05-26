@@ -1,6 +1,7 @@
 package com.jdbee.main;
 
 import com.jdbee.model.Category;
+import com.jdbee.model.FiveCategory;
 import com.jdbee.utils.Constants;
 import com.jdbee.utils.HttpUtil;
 import com.jdbee.utils.JsoupUtil;
@@ -8,7 +9,14 @@ import com.jdbee.utils.JsoupUtil;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 
@@ -35,19 +43,45 @@ public class Main {
 		// 获取三,四,五级类目
 		list = JsoupUtil.getThreeCategory(list);
 		// 获取商品url
-		JsoupUtil.getGoodsUrlList(list);
-
-		// wmic process where name="chromedriver.exe" call terminate
-
-		// for (Category category : list) {
-		// JSON json = (JSON) JSONObject.toJSON(category);
+		// List<Map<String, List<String>>> pageMap =
+		// JsoupUtil.getPageUrlList(list);
+		// JSON json = (JSON) JSONObject.toJSON(pageMap);
 		// System.out.println(json.toJSONString());
-		// }
-		
-		// Document document = HttpUtil.getDocumentByUrl(
-		// "https://search.jd.com/search?keyword=%E8%BF%9B%E5%8F%A3%E6%B5%B7%E8%8B%94&enc=utf-8&qrst=1&rt=1&stop=1&vt=2&offset=3&wq=%E8%BF%9B%E5%8F%A3%E6%B5%B7%E8%8B%94&ev=3765_9689%40&uc=0#J_searchWrap");
-		// Element elementById = document.getElementById("J_bottomPage");
-		// System.out.println(elementById.select(".p-skip b").text());
+
+		List<FiveCategory> fiveCategories = JsoupUtil.getLastCategory(list, "食品饮料、保健食品", "进口食品");
+
+		final int maxThreadCnt = 5;
+		ExecutorService p = Executors.newFixedThreadPool(maxThreadCnt);
+
+		final List<Callable<Integer>> partitions = new ArrayList<Callable<Integer>>();
+		for (final FiveCategory category : fiveCategories) {
+			partitions.add(new Callable<Integer>() {
+				public Integer call() throws Exception {
+					Map<String, List<String>> map = JsoupUtil.getPageUrl(category);
+
+					Iterator<Entry<String, List<String>>> iterator = map.entrySet().iterator();
+					while (iterator.hasNext()) {
+
+						Entry<String, List<String>> next = iterator.next();
+						List<String> urls = next.getValue();
+						String key = next.getKey();
+						System.out.println("\n key:" + key);
+						for (String url : urls) {
+							System.out.println(url);
+						}
+
+					}
+					System.out.println(Thread.currentThread().getName() + "&&&&&&&&&&&");
+					return 0;
+				}
+			});
+		}
+		try {
+			p.invokeAll(partitions);
+			HttpUtil.killChromDriver();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 	}
 

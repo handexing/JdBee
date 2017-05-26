@@ -38,6 +38,21 @@ public class AppTest {
 		} finally {
 			webDriver.close();
 		}
+	}
 
+	@Test
+	public void testUrl() {
+		// Document document = HttpUtil.getDocumentByUrl(
+		// "https://search.jd.com/Search?keyword=%E8%BF%9B%E5%8F%A3%E6%A6%B4%E8%8E%B2%E5%A8%81%E5%8C%96&enc=utf-8&wq=%E8%BF%9B%E5%8F%A3%E6%A6%B4%E8%8E%B2%E5%A8%81%E5%8C%96&pvid=63028a7071c84281a09c47cb9ed707e2");
+		// Element elementById = document.getElementById("J_bottomPage");
+		// if (elementById.childNodeSize() > 0) {
+		// System.out.println(elementById.select(".p-skip b").text());
+		// } else {
+		// System.out.println("==========");
+		// }
+
+		// Document document = HttpUtil.getDocumentByUrl(
+		// "https://detail.tmall.com/item.htm?spm=a220m.1000858.1000725.6.HOWjLB&id=540016761844&skuId=3201176746543&areaId=310100&user_id=3000674726&cat_id=2&is_b=1&rn=e380807ac88b9acccf0385aa2d128038");
+		// System.out.println(document.getElementById("J_DetailMeta"));
 	}
 }

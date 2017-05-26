@@ -13,7 +13,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName: JsoupUtil
@@ -53,7 +55,90 @@ public class JsoupUtil {
 	}
 
 
-	public static void getGoodsUrlList(List<Category> list) {
+	/**
+	 * @Title: getLastCategory 
+	 * @Description: 找到最后一级类别
+	 * @param @param list
+	 * @param @param firstcate
+	 * @param @param secondCate
+	 * @param @return    设定文件 
+	 * @return List<FiveCategory>    返回类型 
+	 * @throws
+	 */
+	public static List<FiveCategory> getLastCategory(List<Category> list, String firstcate, String secondCate) {
+
+		List<FiveCategory> fiveCate = new ArrayList<FiveCategory>();
+
+		for (Category category : list) {
+			if (firstcate.equals(category.getName())) {
+				List<SecondCategory> senondCates = category.getSenondCates();
+				for (SecondCategory secondCategory : senondCates) {
+					if (secondCate.equals(secondCategory.getName())) {
+						List<ThreeCategory> threeCates = secondCategory.getThreeCates();
+						for (ThreeCategory threeCategory : threeCates) {
+							List<FourCategory> fourCates = threeCategory.getFourCates();
+							for (FourCategory fourCategory : fourCates) {
+								List<FiveCategory> fiveCates = fourCategory.getFiveCates();
+								for (FiveCategory fiveCategory : fiveCates) {
+									fiveCate.add(fiveCategory);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return fiveCate;
+	}
+
+	/**
+	 * @Title: getPageUrl 
+	 * @Description: 获取类别页数
+	 * @param @param fiveCategory
+	 * @param @return    设定文件 
+	 * @return Map<String,List<String>>    返回类型 
+	 * @throws
+	 */
+	public static Map<String, List<String>> getPageUrl(FiveCategory fiveCategory) {
+
+		log.info("正在爬取：" + fiveCategory.getUrl());
+		Map<String, List<String>> map = new HashMap<String, List<String>>();
+		List<String> urls = new ArrayList<String>();
+
+		Document document = HttpUtil.getDocumentByUrl(fiveCategory.getUrl());
+		Element element = document.getElementById("J_bottomPage");
+
+		if (element.childNodeSize() > 0) {// 判断是否有分页
+			int cnt = Integer.parseInt(element.select(".p-skip b").text());
+			for (int i = 1; i < cnt; i++) {
+				String url = Constants.JDURL + fiveCategory.getName() + Constants.JDENC + Constants.JDPAGE + i;
+				urls.add(url);
+			}
+			log.info(urls.size() + "页 @@@@@@@@@@@@@@@@@@");
+			map.put(fiveCategory.getName(), urls);
+		} else {
+			String url = Constants.JDURL + fiveCategory.getName() + Constants.JDENC + Constants.JDPAGE + 1;
+			urls.add(url);
+			map.put(fiveCategory.getName(), urls);
+		}
+
+		return map;
+	}
+
+	
+	/**
+	 * @Title: getPageUrlList 
+	 * @Description: 获取类目
+	 * @param @param list
+	 * @param @return    设定文件 
+	 * @return List<Map<String,List<String>>>    返回类型 
+	 * @throws
+	 */
+	public static List<Map<String, List<String>>> getPageUrlList(List<Category> list) {
+
+		List<Map<String, List<String>>> pageMap = new ArrayList<Map<String, List<String>>>();
+
 		for (Category category : list) {
 			if ("食品饮料、保健食品".equals(category.getName())) {
 				List<SecondCategory> senondCates = category.getSenondCates();
@@ -65,10 +150,8 @@ public class JsoupUtil {
 							for (FourCategory fourCategory : fourCates) {
 								List<FiveCategory> fiveCates = fourCategory.getFiveCates();
 								for (FiveCategory fiveCategory : fiveCates) {
-									Document document = HttpUtil.getDocumentByUrl(fiveCategory.getUrl());
-									Element element = document.getElementById("J_bottomPage");
-									System.out.println(
-											fiveCategory.getName() + "::" + element.select(".p-skip b").text());
+									Map<String, List<String>> map = getPageUrl(fiveCategory);
+									pageMap.add(map);
 								}
 							}
 						}
@@ -76,13 +159,15 @@ public class JsoupUtil {
 				}
 			}
 		}
+
+		return pageMap;
 	}
 
 	/**
-	 * @param i 
-	 * @param content 
 	 * @Title: getSecondCategory 
 	 * @Description: 获取二级类别
+	 * @param @param content
+	 * @param @param cates
 	 * @param @return    设定文件 
 	 * @return List<Category>    返回类型 
 	 * @throws
@@ -121,12 +206,8 @@ public class JsoupUtil {
 	}
 
 	/**
-	 * @Title: getThreeCategory 
-	 * @Description: 获取3,4,5级类目
-	 * @param @param list
-	 * @param @return    设定文件 
-	 * @return List<Category>    返回类型 
-	 * @throws
+	 * @Title: getThreeCategory @Description: 获取3,4,5级类目 @param @param
+	 * list @param @return 设定文件 @return List<Category> 返回类型 @throws
 	 */
 	public static List<Category> getThreeCategory(List<Category> list) {
 

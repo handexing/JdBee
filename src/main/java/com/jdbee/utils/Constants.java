@@ -13,4 +13,17 @@ public class Constants {
 	 * 京东
 	 */
 	public static final String JD_URL = "https://www.jd.com/allSort.aspx";
+
+	public static String JDURL = "http://search.jd.com/Search?keyword=";
+	/**
+	 * JD汉字编码格式
+	 */
+	public static String JDENC = "&enc=utf-8";
+	/**
+	 * JD分页
+	 */
+	public static String JDPAGE = "&page=";
+
+	// https://search.jd.com/Search?keyword=%E5%8E%9F%E5%91%B3%E6%B5%B7%E8%8B%94&enc=utf-8&suggest=1.def.0.T07&wq=yuanwei%E6%B5%B7%E8%8B%94&pvid=17eeaaa031dc4594a49e3c1700d0d3c3
+
 }

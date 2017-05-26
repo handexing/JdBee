@@ -65,7 +65,6 @@ public class HttpUtil {
 			e.printStackTrace();
 		} finally {
 			webDriver.close();
-			WindowsUtils.tryToKillByName("chromedriver.exe");
 		}
 		return document;
 	}
@@ -79,8 +78,10 @@ public class HttpUtil {
 	 */
 	public static void killChromDriver() {
 		try {
-			Runtime.getRuntime().exec("wmic process where name=\"chromedriver.exe\" call terminate");
-		} catch (IOException e) {
+			WindowsUtils.tryToKillByName("chromedriver.exe");
+			// Runtime.getRuntime().exec("wmic process where
+			// name=\"chromedriver.exe\" call terminate");
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
