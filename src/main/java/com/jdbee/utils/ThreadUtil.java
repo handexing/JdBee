@@ -2,38 +2,54 @@ package com.jdbee.utils;
 
 import com.jdbee.model.FiveCategory;
 
-import java.util.Iterator;
+import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class ThreadUtil implements Runnable {
+public class ThreadUtil {
 
-	private static List<FiveCategory> list = null;
+	public static final Logger log = Logger.getLogger(ThreadUtil.class);
 
-	public ThreadUtil(List<FiveCategory> list) {
-		ThreadUtil.list = list;
-	}
+	private static List<Map<String, List<String>>> list = new ArrayList<Map<String, List<String>>>();
 
-	public void run() {
-		for (FiveCategory category : list) {
+	/**
+	 * @Title: getCategoryPageUrl 
+	 * @Description: 获取类目的分页集合
+	 * @param @param fiveCategories
+	 * @param @return    设定文件 
+	 * @return List<Map<String,List<String>>>    返回类型 
+	 * @throws
+	 */
+	public static  List<Map<String, List<String>>> getCategoryPageUrl(List<FiveCategory> fiveCategories) {
 
-			Map<String, List<String>> map = JsoupUtil.getPageUrl(category);
+		ExecutorService p = Executors.newFixedThreadPool(Constants.MAX_THREAD_CNT);
+		final List<Callable<Integer>> partitions = new ArrayList<Callable<Integer>>();
 
-			Iterator<Entry<String, List<String>>> iterator = map.entrySet().iterator();
-			while (iterator.hasNext()) {
+		try {
 
-				Entry<String, List<String>> next = iterator.next();
-				List<String> urls = next.getValue();
-				String key = next.getKey();
-				System.out.println("\n key:" + key);
-				for (String url : urls) {
-					System.out.println(url);
-				}
-
+			for (final FiveCategory category : fiveCategories) {
+				partitions.add(new Callable<Integer>() {
+					public Integer call() throws Exception {
+						Map<String, List<String>> map = JsoupUtil.getPageUrl(category);
+						list.add(map);
+						log.info(category.getName() + "已爬完...已爬取" + list.size() + "个类别...");
+						return 0;
+					}
+				});
 			}
-			System.out.println(Thread.currentThread().getName() + "&&&&&&&&&&&");
+
+			p.invokeAll(partitions);
+			p.shutdown();
+			HttpUtil.killChromDriver();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+		return list;
 	}
 
 }

@@ -5,18 +5,15 @@ import com.jdbee.model.FiveCategory;
 import com.jdbee.utils.Constants;
 import com.jdbee.utils.HttpUtil;
 import com.jdbee.utils.JsoupUtil;
+import com.jdbee.utils.ThreadUtil;
 
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * 
@@ -50,38 +47,25 @@ public class Main {
 
 		List<FiveCategory> fiveCategories = JsoupUtil.getLastCategory(list, "食品饮料、保健食品", "进口食品");
 
-		final int maxThreadCnt = 5;
-		ExecutorService p = Executors.newFixedThreadPool(maxThreadCnt);
+		List<Map<String, List<String>>> categoryPageUrl = ThreadUtil.getCategoryPageUrl(fiveCategories);
 
-		final List<Callable<Integer>> partitions = new ArrayList<Callable<Integer>>();
-		for (final FiveCategory category : fiveCategories) {
-			partitions.add(new Callable<Integer>() {
-				public Integer call() throws Exception {
-					Map<String, List<String>> map = JsoupUtil.getPageUrl(category);
+		int i = 0;
 
-					Iterator<Entry<String, List<String>>> iterator = map.entrySet().iterator();
-					while (iterator.hasNext()) {
-
-						Entry<String, List<String>> next = iterator.next();
-						List<String> urls = next.getValue();
-						String key = next.getKey();
-						System.out.println("\n key:" + key);
-						for (String url : urls) {
-							System.out.println(url);
-						}
-
-					}
-					System.out.println(Thread.currentThread().getName() + "&&&&&&&&&&&");
-					return 0;
+		for (Map<String, List<String>> map : categoryPageUrl) {
+			Iterator<Entry<String, List<String>>> iterator = map.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Entry<String, List<String>> next = iterator.next();
+				List<String> urls = next.getValue();
+				String key = next.getKey();
+				System.err.println("\n key:" + key);
+				for (String url : urls) {
+					System.out.println(url);
+					i++;
 				}
-			});
+			}
 		}
-		try {
-			p.invokeAll(partitions);
-			HttpUtil.killChromDriver();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+
+		System.out.println("共有" + i + "页数据...");
 
 	}
 

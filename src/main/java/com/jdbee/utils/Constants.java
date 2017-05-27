@@ -26,4 +26,8 @@ public class Constants {
 
 	// https://search.jd.com/Search?keyword=%E5%8E%9F%E5%91%B3%E6%B5%B7%E8%8B%94&enc=utf-8&suggest=1.def.0.T07&wq=yuanwei%E6%B5%B7%E8%8B%94&pvid=17eeaaa031dc4594a49e3c1700d0d3c3
 
+	/**
+	 * 最大线程数
+	 */
+	public static final int MAX_THREAD_CNT = 5;
 }

@@ -65,6 +65,7 @@ public class HttpUtil {
 			e.printStackTrace();
 		} finally {
 			webDriver.close();
+			webDriver.quit();
 		}
 		return document;
 	}

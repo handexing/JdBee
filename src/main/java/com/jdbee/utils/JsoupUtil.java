@@ -102,7 +102,6 @@ public class JsoupUtil {
 	 */
 	public static Map<String, List<String>> getPageUrl(FiveCategory fiveCategory) {
 
-		log.info("正在爬取：" + fiveCategory.getUrl());
 		Map<String, List<String>> map = new HashMap<String, List<String>>();
 		List<String> urls = new ArrayList<String>();
 
@@ -115,7 +114,7 @@ public class JsoupUtil {
 				String url = Constants.JDURL + fiveCategory.getName() + Constants.JDENC + Constants.JDPAGE + i;
 				urls.add(url);
 			}
-			log.info(urls.size() + "页 @@@@@@@@@@@@@@@@@@");
+			log.info("正在爬取：" + fiveCategory.getName() + "，共" + urls.size() + "页 ，url：" + fiveCategory.getUrl());
 			map.put(fiveCategory.getName(), urls);
 		} else {
 			String url = Constants.JDURL + fiveCategory.getName() + Constants.JDENC + Constants.JDPAGE + 1;
@@ -135,33 +134,35 @@ public class JsoupUtil {
 	 * @return List<Map<String,List<String>>>    返回类型 
 	 * @throws
 	 */
-	public static List<Map<String, List<String>>> getPageUrlList(List<Category> list) {
-
-		List<Map<String, List<String>>> pageMap = new ArrayList<Map<String, List<String>>>();
-
-		for (Category category : list) {
-			if ("食品饮料、保健食品".equals(category.getName())) {
-				List<SecondCategory> senondCates = category.getSenondCates();
-				for (SecondCategory secondCategory : senondCates) {
-					if ("进口食品".equals(secondCategory.getName())) {
-						List<ThreeCategory> threeCates = secondCategory.getThreeCates();
-						for (ThreeCategory threeCategory : threeCates) {
-							List<FourCategory> fourCates = threeCategory.getFourCates();
-							for (FourCategory fourCategory : fourCates) {
-								List<FiveCategory> fiveCates = fourCategory.getFiveCates();
-								for (FiveCategory fiveCategory : fiveCates) {
-									Map<String, List<String>> map = getPageUrl(fiveCategory);
-									pageMap.add(map);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return pageMap;
-	}
+	// public static List<Map<String, List<String>>>
+	// getPageUrlList(List<Category> list) {
+	//
+	// List<Map<String, List<String>>> pageMap = new ArrayList<Map<String,
+	// List<String>>>();
+	//
+	// for (Category category : list) {
+	// if ("食品饮料、保健食品".equals(category.getName())) {
+	// List<SecondCategory> senondCates = category.getSenondCates();
+	// for (SecondCategory secondCategory : senondCates) {
+	// if ("进口食品".equals(secondCategory.getName())) {
+	// List<ThreeCategory> threeCates = secondCategory.getThreeCates();
+	// for (ThreeCategory threeCategory : threeCates) {
+	// List<FourCategory> fourCates = threeCategory.getFourCates();
+	// for (FourCategory fourCategory : fourCates) {
+	// List<FiveCategory> fiveCates = fourCategory.getFiveCates();
+	// for (FiveCategory fiveCategory : fiveCates) {
+	// Map<String, List<String>> map = getPageUrl(fiveCategory);
+	// pageMap.add(map);
+	// }
+	// }
+	// }
+	// }
+	// }
+	// }
+	// }
+	//
+	// return pageMap;
+	// }
 
 	/**
 	 * @Title: getSecondCategory 
