@@ -1,12 +1,19 @@
 package com.handx.jd.JdBee;
 
+import com.jdbee.utils.HttpUtil;
+
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppTest {
 
@@ -17,6 +24,38 @@ public class AppTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void testGetGoods() throws InterruptedException {
+		List<String> skuUrls = new ArrayList<String>();
+
+		Document document = HttpUtil.getDocumentByUrl("http://search.jd.com/Search?keyword=玉米片&enc=utf-8&page=1");
+		Element element = document.getElementById("J_goodsList");
+		Elements sku = element.select("li");
+		
+		for (Element skuId : sku) {
+			String url = skuId.attr("data-sku");
+			if (!StringUtils.isEmpty(url)) {
+				skuUrls.add(url);
+			}
+		}
+
+		for (String url : skuUrls) {
+			System.out.println(url);
+		}
+		System.out.println(skuUrls.size());
+	}
+
+	@Test
+	public void testHtmlUnit() throws InterruptedException {
+		// WebDriver driver = new HtmlUnitDriver(true);
+		// driver.get("https://channel.jd.com/1320-5019.html");
+		// Thread.sleep(3000);
+		//
+		// String str = driver.getPageSource();
+		// Document parse = Jsoup.parse(str);
+		// System.err.println(parse.getElementsByClass("food_nav") + "=======");
 	}
 
 	@Test
@@ -37,6 +76,7 @@ public class AppTest {
 			e.printStackTrace();
 		} finally {
 			webDriver.close();
+			webDriver.quit();
 		}
 	}
 
