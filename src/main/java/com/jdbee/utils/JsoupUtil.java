@@ -6,6 +6,7 @@ import com.jdbee.model.FourCategory;
 import com.jdbee.model.SecondCategory;
 import com.jdbee.model.ThreeCategory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -56,6 +57,32 @@ public class JsoupUtil {
 
 
 	/**
+	 * 
+	 * @Title: getGoodsSku 
+	 * @Description: 根据分页url获取页面里面的商品sku
+	 * @param @param url
+	 * @return List<String>    返回类型 
+	 * @throws
+	 */
+	public static List<String> getGoodsSku(String url) {
+		
+		List<String> skuUrls = new ArrayList<String>();
+
+		Document document = HttpUtil.getDocumentByUrl(url);
+		Element element = document.getElementById("J_goodsList");
+		Elements sku = element.select("li");
+
+		for (Element skuId : sku) {
+			String path = skuId.attr("data-sku");
+			if (!StringUtils.isEmpty(path)) {
+				skuUrls.add(path);
+			}
+		}
+
+		return skuUrls;
+	}
+
+	/**
 	 * @Title: getLastCategory 
 	 * @Description: 找到最后一级类别
 	 * @param @param list
@@ -90,39 +117,6 @@ public class JsoupUtil {
 		}
 
 		return fiveCate;
-	}
-
-	/**
-	 * @Title: getPageUrl 
-	 * @Description: 获取类别页数
-	 * @param @param fiveCategory
-	 * @param @return    设定文件 
-	 * @return Map<String,List<String>>    返回类型 
-	 * @throws
-	 */
-	public static Map<String, List<String>> getPageUrl(FiveCategory fiveCategory) {
-
-		Map<String, List<String>> map = new HashMap<String, List<String>>();
-		List<String> urls = new ArrayList<String>();
-
-		Document document = HttpUtil.getDocumentByUrl(fiveCategory.getUrl());
-		Element element = document.getElementById("J_bottomPage");
-
-		if (element.childNodeSize() > 0) {// 判断是否有分页
-			int cnt = Integer.parseInt(element.select(".p-skip b").text());
-			for (int i = 1; i < cnt; i++) {
-				String url = Constants.JDURL + fiveCategory.getName() + Constants.JDENC + Constants.JDPAGE + i;
-				urls.add(url);
-			}
-			log.info("正在爬取：" + fiveCategory.getName() + "，共" + urls.size() + "页 ，url：" + fiveCategory.getUrl());
-			map.put(fiveCategory.getName(), urls);
-		} else {
-			String url = Constants.JDURL + fiveCategory.getName() + Constants.JDENC + Constants.JDPAGE + 1;
-			urls.add(url);
-			map.put(fiveCategory.getName(), urls);
-		}
-
-		return map;
 	}
 
 	
@@ -163,6 +157,39 @@ public class JsoupUtil {
 	//
 	// return pageMap;
 	// }
+
+	/**
+	 * @Title: getPageUrl 
+	 * @Description: 获取类别页数
+	 * @param @param fiveCategory
+	 * @param @return    设定文件 
+	 * @return Map<String,List<String>>    返回类型 
+	 * @throws
+	 */
+	public static Map<String, List<String>> getPageUrl(FiveCategory fiveCategory) {
+
+		Map<String, List<String>> map = new HashMap<String, List<String>>();
+		List<String> urls = new ArrayList<String>();
+
+		Document document = HttpUtil.getDocumentByUrl(fiveCategory.getUrl());
+		Element element = document.getElementById("J_bottomPage");
+
+		if (element.childNodeSize() > 0) {// 判断是否有分页
+			int cnt = Integer.parseInt(element.select(".p-skip b").text());
+			for (int i = 1; i < cnt; i++) {
+				String url = Constants.JDURL + fiveCategory.getName() + Constants.JDENC + Constants.JDPAGE + i;
+				urls.add(url);
+			}
+			log.info("正在爬取：" + fiveCategory.getName() + "，共" + urls.size() + "页 ，url：" + fiveCategory.getUrl());
+			map.put(fiveCategory.getName(), urls);
+		} else {
+			String url = Constants.JDURL + fiveCategory.getName() + Constants.JDENC + Constants.JDPAGE + 1;
+			urls.add(url);
+			map.put(fiveCategory.getName(), urls);
+		}
+
+		return map;
+	}
 
 	/**
 	 * @Title: getSecondCategory 
@@ -206,9 +233,12 @@ public class JsoupUtil {
 		return cates;
 	}
 
+
 	/**
-	 * @Title: getThreeCategory @Description: 获取3,4,5级类目 @param @param
-	 * list @param @return 设定文件 @return List<Category> 返回类型 @throws
+	 * @Title: getThreeCategory 
+	 * @Description: 获取3,4,5级类目 
+	 * @param list
+	 * @return List<Category> 返回类型 
 	 */
 	public static List<Category> getThreeCategory(List<Category> list) {
 

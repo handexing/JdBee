@@ -47,7 +47,9 @@ public class Main {
 
 		List<FiveCategory> fiveCategories = JsoupUtil.getLastCategory(list, "食品饮料、保健食品", "进口食品");
 
+		// 获取类目分页信息
 		List<Map<String, List<String>>> categoryPageUrl = ThreadUtil.getCategoryPageUrl(fiveCategories);
+
 
 		int i = 0;
 
@@ -64,8 +66,21 @@ public class Main {
 				}
 			}
 		}
-
 		System.out.println("共有" + i + "页数据...");
+
+		List<List<String>> skus = ThreadUtil.getGoodsSkuIdByCatePages(categoryPageUrl);
+
+		System.out.println("共爬取界面：" + skus.size() + "个！");
+
+		int j = 0;
+		for (List<String> lists : skus) {
+			for (String str : lists) {
+				System.err.println(str);
+				j++;
+			}
+		}
+		System.out.println("共有SKU" + j + "个...");
+
 
 	}
 
