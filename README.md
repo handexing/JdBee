@@ -23,6 +23,8 @@
 
 > 这个也可以爬取类目和商品skuid
 
+- 使用WebCollector+selenium+phantomjs爬取商品[只爬取一个类目测试](*2017-06-01*)
+
 **selenium这个爬取的速度太慢了，近期在找别的方法爬取**
 
 

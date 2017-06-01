@@ -36,4 +36,9 @@ public class Constants {
 	 */
 	public static final int MAX_THREAD_CNT = 5;
 
+	/**
+	 * 京东
+	 */
+	public static final String JD = "JD";
+
 }
