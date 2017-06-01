@@ -21,13 +21,17 @@ public class NewMain extends RetailersCrawler {
 	public static final Logger log = Logger.getLogger(NewMain.class);
 
 	public static void main(String[] args) throws Exception {
+
 		// 目前只是用一个类目测试
-		NewMain crawler = new NewMain("data",
-				"http://list.jd.com/list.html?cat=1319,1523,7052&page=%s&go=0&JL=6_0_0");
+		NewMain crawler = new NewMain("data", "http://list.jd.com/list.html?cat=1319,1523,7052&page=%s&go=0&JL=6_0_0");
 		crawler.setThreads(5);// 抓取启动线程数
 		crawler.start(1);// 层数
 
 		crawler.print();
+
+		// 获取类目列表
+		// List<Category> category = JdCategory.getCategory();
+
 	}
 
 	private JDGoodsList goodsList;

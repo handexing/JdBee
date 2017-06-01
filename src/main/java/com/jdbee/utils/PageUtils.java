@@ -60,8 +60,8 @@ public class PageUtils {
 		Runtime rt = Runtime.getRuntime();
 		Process process = null;
 		try {
-			process = rt.exec("D:\\myWorkspace\\JdBee\\src\\main\\resources\\phantomjs.exe"
-					+ "D:/myWorkspace/JdBee/src/main/resources/parser.js " + page.getUrl().trim());
+			process = rt.exec(PropertiesUtils.getProperty(PropertiesUtils.PHANTOMJS_DRIVER_PATH)
+					+ PropertiesUtils.getProperty(PropertiesUtils.PHANTOMJS_JS) + page.getUrl().trim());
 			InputStream in = process.getInputStream();
 			InputStreamReader reader = new InputStreamReader(in, "UTF-8");
 			BufferedReader br = new BufferedReader(reader);
@@ -86,9 +86,13 @@ public class PageUtils {
 	 */
 	public static WebDriver getWebDriver(Page page) {
 		System.setProperty(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-				"D:\\myWorkspace\\JdBee\\src\\main\\resources\\phantomjs.exe");
+				PropertiesUtils.getProperty(PropertiesUtils.PHANTOMJS_DRIVER_PATH));
 		WebDriver driver = new PhantomJSDriver();
 		driver.get(page.getUrl());
 		return driver;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(PropertiesUtils.getProperty(PropertiesUtils.PHANTOMJS_DRIVER_PATH));
 	}
 }
