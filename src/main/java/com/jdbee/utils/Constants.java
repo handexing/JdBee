@@ -41,4 +41,9 @@ public class Constants {
 	 */
 	public static final String JD = "JD";
 
+	/**
+	 * 京东分页参数
+	 */
+	public static final String JD_PAGING_PARAMETER = "&page=%s&go=0&JL=6_0_0";
+
 }

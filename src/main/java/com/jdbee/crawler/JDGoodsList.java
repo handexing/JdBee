@@ -5,6 +5,7 @@ import com.jdbee.utils.Constants;
 import com.jdbee.utils.PageUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -23,6 +24,7 @@ import cn.edu.hfut.dmic.webcollector.model.Page;
 public class JDGoodsList extends GoodsList {
 
 	private static final long serialVersionUID = -6016161025701938903L;
+	public final Logger log = Logger.getLogger(JDGoodsList.class);
 
 	@Override
 	public void addGoods(Page page) {
@@ -61,7 +63,7 @@ public class JDGoodsList extends GoodsList {
 				System.out.println("else is empty");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.warn("爬取异常！！！");
 		} finally {
 			if (driver != null) {
 				driver.quit();

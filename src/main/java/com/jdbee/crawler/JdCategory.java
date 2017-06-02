@@ -1,7 +1,5 @@
 package com.jdbee.crawler;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.jdbee.model.Category;
 import com.jdbee.model.SecondCategory;
 import com.jdbee.model.ThreeCategory;
@@ -80,8 +78,8 @@ public class JdCategory {
 			}
 		}
 
-		JSON json = (JSON) JSONObject.toJSON(list);
-		log.info(json);
+		// JSON json = (JSON) JSONObject.toJSON(list);
+		// log.info(json);
 
 		return list;
 	}
