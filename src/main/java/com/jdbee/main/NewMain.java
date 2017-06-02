@@ -31,7 +31,6 @@ public class NewMain extends RetailersCrawler {
 
 		// 获取类目列表
 		// List<Category> category = JdCategory.getCategory();
-
 	}
 
 	private JDGoodsList goodsList;

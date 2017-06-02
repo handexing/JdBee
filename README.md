@@ -7,12 +7,14 @@
 
 
 
-## 使用框架
+## 项目需要
 
 - httpclient
 - jsoup
 - slf4j
 - selenium
+- phantomjs
+- WebCollector
 
 ## 更新日志
 
@@ -21,11 +23,10 @@
 - 多线程并发爬取类目分页数据(*2017-05-26*)
 - 多线程爬取商品skuid(*2017-05-28*)
 
-> 这个也可以爬取类目和商品skuid
-
-- 使用WebCollector+selenium+phantomjs爬取商品[只爬取一个类目测试](*2017-06-01*)
-
 **selenium这个爬取的速度太慢了，近期在找别的方法爬取**
+
+- 使用WebCollector+selenium+phantomjs爬取商品(*2017-06-01只爬取一个类目测试*)
+- 数据入库测试(*2017-06-02*)
 
 
 > 觉得不错的朋友可以点下star,watch,fork也算是对我的鼓励了。
