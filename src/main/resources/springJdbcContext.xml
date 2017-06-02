@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		   http://www.springframework.org/schema/task
+		   http://www.springframework.org/schema/task/spring-task-4.0.xsd
+           http://www.springframework.org/schema/aop 
+           http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	       http://www.springframework.org/schema/jee 
+	       http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+	
+	<context:component-scan base-package="com.jdbee"/>
+	
+	 <!--加载配置文件-->
+    <context:property-placeholder location="classpath:config.properties"/>
+    
+     <!--配置数据源-->
+     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close" lazy-init="true">
+		<property name="url" value="${mysql_url}" />
+		<property name="username" value="${mysql_username}" />
+		<property name="password" value="${mysql_password}" />
+		<property name="driverClassName" value="${mysql_driverClassName}" />
+		<property name="maxActive" value="${maxActive}" />
+		<property name="initialSize" value="${initialSize}" />
+		<!-- <property name="maxWait" value="${maxWait}" /> -->
+		<property name="minIdle" value="${minIdle}" />
+		<property name="defaultAutoCommit" value="true" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="3000" />
+		<property name="testOnBorrow">
+			<value>false</value>
+		</property>
+		<property name="testOnReturn">
+			<value>false</value>
+		</property>
+		<property name="testWhileIdle">
+			<value>true</value>
+		</property>
+		<property name="minEvictableIdleTimeMillis">
+			<value>180000</value>
+		</property>
+		<property name="timeBetweenEvictionRunsMillis">
+			<value>6000</value>
+		</property>
+		<property name="validationQuery">
+			<value>SELECT 1 </value>
+		</property>
+		<property name="filters" value="stat" />
+	</bean>
+	
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    	<property name="dataSource" ref="dataSource"></property>
+    </bean>
+    
+    <!--配置事务-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+ 
+    <!--配置基于注解的事务-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+ 
+</beans>
