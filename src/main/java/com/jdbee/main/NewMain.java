@@ -13,9 +13,6 @@ import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import cn.edu.hfut.dmic.webcollector.model.Links;
 import cn.edu.hfut.dmic.webcollector.model.Page;
@@ -32,48 +29,43 @@ public class NewMain extends RetailersCrawler {
 	public static final Logger log = Logger.getLogger(NewMain.class);
 
 	public static void main(String[] args) throws Exception {
+		long startTime = System.currentTimeMillis(); // 获取开始时间
 
 		// 目前只是用一个类目测试
 		// NewMain crawler = new NewMain("data",
-		// "http://list.jd.com/list.html?cat=1320,5019,5020" +
+		// "https://list.jd.com/list.html?cat=1320,1581,2647" +
 		// Constants.JD_PAGING_PARAMETER);
 		// crawler.setThreads(3);// 抓取启动线程数
 		// crawler.start(1);// 层数
 
 		// crawler.print();
 
-		ExecutorService p = Executors.newFixedThreadPool(Constants.MAX_THREAD_CNT);
-		final List<Callable<Integer>> partitions = new ArrayList<Callable<Integer>>();
+		List<String> urls = new ArrayList<String>();
 
-		try {
-			// 获取类目列表
-			List<Category> list = JdCategory.getCategory();
+		// 获取类目列表
+		List<Category> list = JdCategory.getCategory();
 
-			for (Category category : list) {
-				if ("食品饮料、保健食品".equals(category.getName())) {
-					List<SecondCategory> senondCates = category.getSenondCates();
-					for (SecondCategory secondCategory : senondCates) {
-						List<ThreeCategory> threeCates = secondCategory.getThreeCates();
-						for (final ThreeCategory threeCategory : threeCates) {
-							System.out.println(threeCategory.getUrl());
-							partitions.add(new Callable<Integer>() {
-								public Integer call() throws Exception {
-									NewMain crawler = new NewMain("data",
-											threeCategory.getUrl() + Constants.JD_PAGING_PARAMETER);
-									crawler.setThreads(5);// 抓取启动线程数
-									crawler.start(1);// 层数
-									return 0;
-								}
-							});
-						}
+
+		for (Category category : list) {
+			if ("食品饮料、保健食品".equals(category.getName())) {
+				List<SecondCategory> senondCates = category.getSenondCates();
+				for (SecondCategory secondCategory : senondCates) {
+					List<ThreeCategory> threeCates = secondCategory.getThreeCates();
+					for (final ThreeCategory threeCategory : threeCates) {
+						urls.add(threeCategory.getUrl());
 					}
 				}
 			}
-			p.invokeAll(partitions);
-			p.shutdown();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
+
+		for (String url : urls) {
+			NewMain crawler = new NewMain("data", url + Constants.JD_PAGING_PARAMETER);
+			crawler.setThreads(8);// 抓取启动线程数
+			crawler.start(1);// 层数
+		}
+
+		long endTime = System.currentTimeMillis(); // 获取结束时间
+		System.out.println("程序运行时间： " + (endTime - startTime) + "ms");
 
 	}
 

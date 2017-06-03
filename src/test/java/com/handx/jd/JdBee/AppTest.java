@@ -20,7 +20,7 @@ public class AppTest {
 	@Test
 	public void testCmd(){
 		try {
-			Runtime.getRuntime().exec("wmic process where name=\"chromedriver.exe\" call terminate");
+			Runtime.getRuntime().exec("wmic process where name=\"phantomjs.exe\" call terminate");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
