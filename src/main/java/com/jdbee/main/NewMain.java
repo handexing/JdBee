@@ -60,7 +60,7 @@ public class NewMain extends RetailersCrawler {
 
 		for (String url : urls) {
 			NewMain crawler = new NewMain("data", url + Constants.JD_PAGING_PARAMETER);
-			crawler.setThreads(8);// 抓取启动线程数
+			crawler.setThreads(5);// 抓取启动线程数
 			crawler.start(1);// 层数
 		}
 
