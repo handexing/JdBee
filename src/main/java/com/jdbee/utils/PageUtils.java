@@ -92,6 +92,22 @@ public class PageUtils {
 		return driver;
 	}
 
+	/**
+	 * @Title: getWebDriver 
+	 * @Description: 根据url获取html
+	 * @param @param url
+	 * @param @return 
+	 * @return WebDriver
+	 * @throws
+	 */
+	public static WebDriver getWebDriver(String url) {
+		System.setProperty(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+				PropertiesUtils.getProperty(PropertiesUtils.PHANTOMJS_DRIVER_PATH));
+		WebDriver driver = new PhantomJSDriver();
+		driver.get(url);
+		return driver;
+	}
+
 	public static void main(String[] args) {
 		System.out.println(PropertiesUtils.getProperty(PropertiesUtils.PHANTOMJS_DRIVER_PATH));
 	}

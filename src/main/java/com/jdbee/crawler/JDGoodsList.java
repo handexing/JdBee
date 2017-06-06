@@ -67,6 +67,7 @@ public class JDGoodsList extends GoodsList {
 					// add(g);
 					System.out.println(g.toString());
 					goodsDao.createGoods(g);
+
 				}
 			} else {
 				log.info("无商品列表！");
