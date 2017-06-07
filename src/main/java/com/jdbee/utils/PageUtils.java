@@ -58,32 +58,25 @@ public class PageUtils {
 	 * @throws IOException
 	 */
 	public static String getPhantomJSDriver(String url) throws IOException {
-		Process process = null;
 		InputStream in = null;
 		try {
-			
-			process = Runtime.getRuntime().exec(PropertiesUtils.getProperty(PropertiesUtils.PHANTOMJS_DRIVER_PATH)
+			Process process = Runtime.getRuntime()
+					.exec(PropertiesUtils.getProperty(PropertiesUtils.PHANTOMJS_DRIVER_PATH)
 					+ " " + PropertiesUtils.getProperty(PropertiesUtils.PHANTOMJS_JS) + " " + url);
-			
 			in = process.getInputStream();
 			InputStreamReader reader = new InputStreamReader(in, "UTF-8");
 			BufferedReader br = new BufferedReader(reader);
 			StringBuffer sbf = new StringBuffer();
-			
 			String tmp = "";
-			
 			while ((tmp = br.readLine()) != null) {
 				sbf.append(tmp);
 			}
-			
 			return sbf.toString();
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally {
 			in.close();
 		}
-
 		return null;
 	}
 

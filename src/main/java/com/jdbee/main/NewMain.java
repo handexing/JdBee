@@ -22,29 +22,22 @@ import cn.edu.hfut.dmic.webcollector.model.Page;
  * @Description: 程序入口
  * @author handx 908716835@qq.com
  * @date 2017年6月1日 下午9:47:17
- *
  */
 public class NewMain extends RetailersCrawler {
 
 	public static final Logger log = Logger.getLogger(NewMain.class);
 
-	public static void main(String[] args) throws Exception {
-		long startTime = System.currentTimeMillis(); // 获取开始时间
-
-		// 目前只是用一个类目测试
-		// NewMain crawler = new NewMain("data",
-		// "https://list.jd.com/list.html?cat=1320,1581,2647" +
-		// Constants.JD_PAGING_PARAMETER);
-		// crawler.setThreads(3);// 抓取启动线程数
-		// crawler.start(1);// 层数
-
-		// crawler.print();
-
+	/**
+	 * @Title: getCategorySnacksUrlList 
+	 * @Description: 获取零食url地址
+	 * @param @return 
+	 * @return List<String>
+	 */
+	private static List<String> getCategorySnacksUrlList() {
 		List<String> urls = new ArrayList<String>();
 
 		// 获取类目列表
 		List<Category> list = JdCategory.getCategory();
-
 
 		for (Category category : list) {
 			if ("食品饮料、保健食品".equals(category.getName())) {
@@ -57,14 +50,21 @@ public class NewMain extends RetailersCrawler {
 				}
 			}
 		}
+		return urls;
+	}
 
+	public static void main(String[] args) throws Exception {
+
+		long startTime = System.currentTimeMillis();
+		List<String> urls = getCategorySnacksUrlList();
+		
 		for (String url : urls) {
 			NewMain crawler = new NewMain("data", url + Constants.JD_PAGING_PARAMETER);
 			crawler.setThreads(5);// 抓取启动线程数
 			crawler.start(1);// 层数
 		}
 
-		long endTime = System.currentTimeMillis(); // 获取结束时间
+		long endTime = System.currentTimeMillis();
 		System.out.println("程序运行时间： " + (endTime - startTime) + "ms");
 
 	}
@@ -80,10 +80,6 @@ public class NewMain extends RetailersCrawler {
 	public int getTotalPage(Page page) {
 		Element ele = page.getDoc().select("div#J_bottomPage").select("span.p-skip>em").first().select("b").first();
 		return ele == null ? 0 : Integer.parseInt(ele.text());
-	}
-
-	private void print() {
-		log.info(goodsList.size());
 	}
 
 	@Override
