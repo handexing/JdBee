@@ -23,19 +23,6 @@ import cn.edu.hfut.dmic.webcollector.model.Page;
 public class PageUtils {
 
 	/**
-	 * 获取webcollector 自带 htmlUnitDriver实例(模拟默认浏览器)
-	 * 
-	 * @param page
-	 * @return
-	 */
-	public static HtmlUnitDriver getDriver(Page page) {
-		HtmlUnitDriver driver = new HtmlUnitDriver();
-		driver.setJavascriptEnabled(true);
-		driver.get(page.getUrl());
-		return driver;
-	}
-
-	/**
 	 * 获取webcollector 自带htmlUnitDriver实例
 	 * 
 	 * @param page
@@ -51,28 +38,50 @@ public class PageUtils {
 	}
 
 	/**
-	 * 直接调用原生phantomJS(即不通过selenium)
+	 * 获取webcollector 自带 htmlUnitDriver实例(模拟默认浏览器)
 	 * 
 	 * @param page
 	 * @return
 	 */
-	public static String getPhantomJSDriver(Page page) {
-		Runtime rt = Runtime.getRuntime();
+	public static HtmlUnitDriver getDriver(String url) {
+		HtmlUnitDriver driver = new HtmlUnitDriver();
+		driver.setJavascriptEnabled(true);
+		driver.get(url);
+		return driver;
+	}
+
+	/**
+	 * 直接调用原生phantomJS(即不通过selenium)
+	 * 
+	 * @param page
+	 * @return
+	 * @throws IOException
+	 */
+	public static String getPhantomJSDriver(String url) throws IOException {
 		Process process = null;
+		InputStream in = null;
 		try {
-			process = rt.exec(PropertiesUtils.getProperty(PropertiesUtils.PHANTOMJS_DRIVER_PATH)
-					+ PropertiesUtils.getProperty(PropertiesUtils.PHANTOMJS_JS) + page.getUrl().trim());
-			InputStream in = process.getInputStream();
+			
+			process = Runtime.getRuntime().exec(PropertiesUtils.getProperty(PropertiesUtils.PHANTOMJS_DRIVER_PATH)
+					+ " " + PropertiesUtils.getProperty(PropertiesUtils.PHANTOMJS_JS) + " " + url);
+			
+			in = process.getInputStream();
 			InputStreamReader reader = new InputStreamReader(in, "UTF-8");
 			BufferedReader br = new BufferedReader(reader);
 			StringBuffer sbf = new StringBuffer();
+			
 			String tmp = "";
+			
 			while ((tmp = br.readLine()) != null) {
 				sbf.append(tmp);
 			}
+			
 			return sbf.toString();
+			
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			in.close();
 		}
 
 		return null;
